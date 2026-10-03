@@ -77,6 +77,12 @@ image_classifier.keras
 
 The saved model was then reloaded successfully before deployment.
 
+### Training and Evaluation Evidence
+
+![Model training and evaluation](evidence/01-model-training-evaluation.png)
+
+*Model training and evaluation showing the completed training process and 66.71% test accuracy.*
+
 ## Local Image Recognition
 
 The model was tested against unseen CIFAR-10 test data.
@@ -89,6 +95,10 @@ Actual: ship
 ```
 
 This verified inference before introducing the API, Docker, or Azure layers.
+
+![Visual ship prediction](evidence/02-visual-ship-prediction.png)
+
+*Local image-recognition test showing the model correctly predicting the CIFAR-10 ship image.*
 
 ## FastAPI
 
@@ -108,7 +118,7 @@ POST /predict
 
 Accepts an uploaded image and returns a predicted CIFAR-10 class and model confidence.
 
-Example cloud response:
+Example response:
 
 ```json
 {
@@ -116,6 +126,12 @@ Example cloud response:
   "confidence": 0.9247
 }
 ```
+
+### Local API Verification
+
+![Local FastAPI verification](evidence/03-local-fastapi-verification.png)
+
+*FastAPI running successfully in the local development environment before cloud deployment.*
 
 ## Docker
 
@@ -176,6 +192,10 @@ Confidence: 0.9247
 
 This confirmed successful end-to-end inference through the deployed cloud service.
 
+![Azure cloud prediction](evidence/04-azure-cloud-prediction.png)
+
+*Successful cloud inference through Azure Container Apps. The `/predict` endpoint returned HTTP 200 with a ship prediction and 0.9247 confidence.*
+
 ## Resource Optimisation
 
 Azure Container Apps was configured with:
@@ -191,23 +211,27 @@ When a new HTTPS request arrived, Azure started a replica and served the applica
 
 This demonstrated demand-driven cloud resource allocation and reduced unnecessary idle compute.
 
+![Azure scaling evidence](evidence/05-azure-scaling-evidence.png)
+
+*Azure Container Apps scaling evidence demonstrating demand-driven replica management.*
+
 ## Troubleshooting
 
 Several useful issues were encountered during implementation.
 
-### PowerShell virtual-environment activation
+### PowerShell Virtual-Environment Activation
 
 PowerShell initially prevented execution of the virtual-environment activation script.
 
 A process-scoped execution-policy change was used rather than making a permanent machine-wide change.
 
-### TensorFlow GPU warning
+### TensorFlow GPU Warning
 
 TensorFlow reported that a compatible GPU runtime was unavailable.
 
 GPU acceleration was unnecessary for this small educational model, so the project intentionally used CPU-based TensorFlow.
 
-### Azure Container Apps target port
+### Azure Container Apps Target Port
 
 The installed Azure CLI/Container Apps extension did not accept `--target-port` with the original update command.
 
@@ -221,6 +245,12 @@ az containerapp ingress update ... --target-port 8000
 
 ```text
 TensorFlow-Image-Recognition/
+├── evidence/
+│   ├── 01-model-training-evaluation.png
+│   ├── 02-visual-ship-prediction.png
+│   ├── 03-local-fastapi-verification.png
+│   ├── 04-azure-cloud-prediction.png
+│   └── 05-azure-scaling-evidence.png
 ├── app.py
 ├── train_model.py
 ├── predict.py
@@ -231,6 +261,22 @@ TensorFlow-Image-Recognition/
 ├── README.md
 └── .gitignore
 ```
+
+## Results Summary
+
+| Test | Result |
+|---|---|
+| Model test accuracy | **66.71%** |
+| Saved model reload | Successful |
+| Local image prediction | Ship correctly classified |
+| Local FastAPI | Successful |
+| Docker container | Successful |
+| Azure HTTPS endpoint | Successful |
+| Azure `/predict` | HTTP 200 |
+| Cloud prediction | Ship |
+| Model confidence | 0.9247 |
+| Idle cloud replicas | 0 |
+| Replica after request | 1 |
 
 ## Limitations
 
